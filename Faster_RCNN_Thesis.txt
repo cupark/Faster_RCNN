@@ -1,0 +1,43 @@
+Faster RCNN - 2015
+ - RPN: 1) Region Proposal Networks, 어떠한 위치에 물체가 있을지 예측하는 신경망이다.
+        2) Fully convolutional Network로 구성되어 있다. 
+        3) 어떤 위치에 어떤 사물이 존재하는가를 예측한다.
+        4) Object Bound(좌표값), Object Score(객체 예측)
+        5) end to end 방식으로 학습이 가능함.
+        6) RPN은 어느 위치에 어떤 크기로 객체가 있을 것만을 판단하며 객체가 무엇인지에 대해서는 
+           기존 Fast RCNN에서 분류된다.
+        7) RCN과 Fast RCNN의 방식을 통합하기 위하여 Region Propasl과 Object Detection에 
+           대한 Fine tunning을 번갈아 가면서 학습을 진행한다.
+           
+ - Advance SPPnet, Fast RCNN: Region Proposal에 시간 소요가 많이되서 RPN을 사용하여
+   획기적으로 시간을 단축함. 
+ - Fast RCNN + RPN을 합쳐 하나의 Network 구조를 갖는다. 즉, Feature 추출 단계까지 
+   Fast RCNN과 RPN이 특징을 공유한다. 따라서 RPN에서 Feature Extract에 시간 소요가 상당히 줄어든다.
+   ::Fast RCNN은 Region Proposal을 Selective Search Algorithm을 CPU 기반으로 동작하였기 때문에 
+     Region Proposal 자체가 소요시간이 많았다.
+     
+- RCNN과 Fast RCNN에서 알아둘 요소 
+  1) RCNN(Region based CNN)은 계산 비용이 비싸다는 단점이 있다.
+     - RCNN은 Selective Search Algorithm을 통하여 약 2,000개의 Region Proposal을 구한뒤에 
+       각각의 RP를 CNN에 넣어서 Classification을 진행한다.
+     - Fast RCNN은 RCNN의 단점을 해결하기 위하여 전체 이미지에서 단한번만 CNN에 넣어 Feature을 
+       뽑아냈다.
+       -> 두개의 모델은 Region Proposal 연산에 대하여 cpu에서 수행하였다. 
+          :: CPU단에서 Bottleneck이 발생하여 속도가 상당히 느리다. 
+
+- Region Proposal에 Time Consuming이 발생되는 것을 방지하기 위하여 GPU 환경에서 
+  돌아 갈 수 있도록 구성하였고, Detection Network와 RPN이 Feature Map을 Sharing 하기때문에
+  성능적으로 좋아지고 시간적인 측면도 확보하였다.
+  
+- RPN의 기능 
+  1) Region Bound Regress
+     - 대략적으로 맞춘 물체가 있을법한 위치를 Regression하여 위치를 조정
+  2) Objectness scores
+     - Region Bound Regress를 통하여 얻은 위치에 사물의 존재 유무를 확인
+  3) end to end 방식
+     - Network 구조가 end to end 방식으로 통째로 GPU에 올릴 수 있다.
+  4) Region Proposal Felxible Size
+     - Region Proposal 예측 시 다양한 스케일과 비율을 가지는 Box 형태로 예측할 수 있다.
+     - Anchor Box의 개념이다. -> 속도상의 이점을 얻음
+     
+ 
