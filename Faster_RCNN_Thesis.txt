@@ -16,6 +16,9 @@ Faster RCNN - 2015
    ::Fast RCNN은 Region Proposal을 Selective Search Algorithm을 CPU 기반으로 동작하였기 때문에 
      Region Proposal 자체가 소요시간이 많았다.
      
+ - Fater RCNN의 Translation-Invarient
+   Object Detection의 주요 특성인 Traslation-Invarient는 
+     
 - RCNN과 Fast RCNN에서 알아둘 요소 
   1) RCNN(Region based CNN)은 계산 비용이 비싸다는 단점이 있다.
      - RCNN은 Selective Search Algorithm을 통하여 약 2,000개의 Region Proposal을 구한뒤에 
@@ -52,11 +55,13 @@ Faster RCNN - 2015
   1) 입력받은 이미지의 Convolution 연산을 진행 하여 Featrue Map에 대하여 RPN을 수행한다.
   2) 박스 형태의 객체 위치와 물체 존재 유 무를 결과로 출력한다. 
   3) Feature Map을 N x N 크기의 Window(Anchor Box)로 Sliding을 하며 Feature map 각각의 위치에 대하여 Prediction을 한다.
-     : Anchor Box's Basic Size = 3 x 3/ 1 x 1, 2 x 1, 1 x 2 3가지 Anchor Box를 스케일을 바꾸어 총 9가지의 Anchor Box를 사용 
+     : Anchor Box's Basic Size = 3 x 3/ 3Scale x 3Ratio를 사용하여 9개의 Box를 사용한다.
+     : W = 50, H = 50 일때 K(Anchor Box 개수) = 9 이면 Total Anchor Box의 개수는 W x H x K = 22,500 (개)이다.
   4) 각각의 Sliding Window는 보다 작은 차원의 Feature 형태로 Mapping된다. -> 256차원으로 맵핑 
   5) 작은 차원의 Feature는 각각 두종류의 Fully Connected Layer로 Forwarding 된다. 
-  5-1) 1st Fully Connected Layer - Regression -> 너비와 높이, x, y 좌표로 위치를 예측한다.
-  5-2) 2nd Fully Connected Layer - Classification
+  5-1) 1st Fully Connected Layer - Regression -> 너비와 높이, x, y 좌표로 위치를 예측한다. 4k Score, 4가 의미하는것은 w, h, x, y 이다.
+  5-2) 2nd Fully Connected Layer - Classification -> 2k Score, 2가 의미하는 것은 Softmax와 같다. ex) 78%있다. 22% 없다.
+  
   
   
     
